@@ -21,8 +21,7 @@ const (
 
 
 [::b]DESCRIPTION
-	This is a minor mode for vim. See all the shorcuts with Ctrl K, and edit them inside shortcuts/shortcuts.go
-	Toggle vim with vim on/off/enable/disable
+	React to messages and see reactions.
 `
 )
 
