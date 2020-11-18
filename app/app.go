@@ -126,6 +126,7 @@ func SetupApplicationWithAccount(app *tview.Application, account string) {
 			window.RegisterCommand(serverJoinCmd)
 			window.RegisterCommand(serverLeaveCmd)
 			window.RegisterCommand(serverCreateCmd)
+			window.RegisterCommand(commandimpls.NewReaction(discord))
 			window.RegisterCommand(commandimpls.NewServerCommand(serverJoinCmd, serverLeaveCmd, serverCreateCmd))
 			window.RegisterCommand(commandimpls.NewNickSetCmd(discord, window))
 			window.RegisterCommand(commandimpls.NewVimCmd(config.Current))

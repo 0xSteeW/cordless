@@ -304,7 +304,7 @@ var (
 	ToggleBareChat = addShortcut("toggle_bare_chat", "Toggle bare chat",
 		globalScope, tcell.NewEventKey(tcell.KeyCtrlB, rune(tcell.KeyCtrlB), tcell.ModCtrl),
 		// FIXME unknown binding
-		addVimEvent(NullVimEvent,NullVimEvent,NullVimEvent),
+		addVimEvent(nil,NullVimEvent,NullVimEvent),
 	)
 
 	GuildListMarkRead = addShortcut("guild_mark_read", "Mark server as read",
@@ -316,6 +316,10 @@ var (
 		channeltree, tcell.NewEventKey(tcell.KeyCtrlR, rune(tcell.KeyCtrlR), tcell.ModCtrl),
 		addVimEvent(NullVimEvent,tcell.NewEventKey(tcell.KeyRune, 'm', tcell.ModNone), tcell.NewEventKey(tcell.KeyRune, 'm', tcell.ModNone)),
 	)
+
+	ShowMessageID = addShortcut("show_message_id", "View message id",
+		chatview, nil,
+	addVimEvent(NullVimEvent,tcell.NewEventKey(tcell.KeyRune, 'w', tcell.ModNone),NullVimEvent))
 
 	VimInsertMode = addShortcut("vim_insert_mode", "Change to Vim insert mode",
 		globalScope, nil,

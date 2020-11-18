@@ -245,6 +245,16 @@ func NewWindow(app *tview.Application, session *discordgo.Session, readyEvent *d
 			window.insertQuoteOfMessage(message)
 			return nil
 		}
+		if shortcuts.ShowMessageID.Equals(event) {
+			if !window.commandMode {
+				window.SetCommandModeEnabled(true)
+			}
+			fmt.Fprintf(window.commandView, "Selected channel ID: %s , Current message ID: %s\n", message.ChannelID, message.ID)
+			clipboard.WriteAll(fmt.Sprintf("%s %s", message.ChannelID, message.ID))
+			// window.chatView.formattedMessages
+			fmt.Fprintf(window.commandView, "ChannelID and MessageID copied to clipboard.\n")
+			return nil
+		}
 
 		if shortcuts.NewDirectMessage.Equals(event) {
 			dmError := window.OpenDirectMessage(message.Author.ID)
@@ -2107,6 +2117,11 @@ func (window *Window) handleNotification(message *discordgo.Message, channel *di
 	}
 
 	return beeep.Notify("Cordless - "+notificationLocation, message.ContentWithMentionsReplaced(), "assets/information.png")
+}
+
+// TODO
+func (window *Window) reactToMessage(messageID string, reaction string) {
+
 }
 
 func (window *Window) askForMessageDeletion(messageID string, usedWithSelection bool) {
