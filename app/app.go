@@ -14,7 +14,6 @@ import (
 	"github.com/Bios-Marcel/cordless/readstate"
 	"github.com/Bios-Marcel/cordless/shortcuts"
 	"github.com/Bios-Marcel/cordless/ui"
-	"github.com/Bios-Marcel/cordless/version"
 )
 
 // SetupApplicationWithAccount launches the whole application and might
@@ -26,7 +25,6 @@ func SetupApplicationWithAccount(app *tview.Application, account string) {
 
 	//We do this right after loading the configuration, as this might take
 	//longer than all following calls.
-	updateAvailableChannel := version.CheckForUpdate(configuration.DontShowUpdateNotificationFor)
 
 	configDir, configErr := config.GetConfigDirectory()
 	if configErr != nil {
@@ -61,35 +59,6 @@ func SetupApplicationWithAccount(app *tview.Application, account string) {
 		discord.State.MaxMessageCount = 100
 
 		readstate.Load(discord.State)
-
-		if isUpdateAvailable := <-updateAvailableChannel; isUpdateAvailable {
-			waitForUpdateDialogChannel := make(chan bool, 1)
-
-			dialog := tview.NewModal()
-			dialog.SetText(fmt.Sprintf("Version %s of cordless is available!\nYou are currently running version %s.\n\nUpdates have to be installed manually or via your package manager.\n\nThe snap package manager isn't supported by cordless anymore!", version.GetLatestRemoteVersion(), version.Version))
-			buttonOk := "Thanks for the info"
-			buttonDontRemindAgainForThisVersion := fmt.Sprintf("Skip reminders for %s", version.GetLatestRemoteVersion())
-			buttonNeverRemindMeAgain := "Never remind me again"
-			dialog.AddButtons([]string{buttonOk, buttonDontRemindAgainForThisVersion, buttonNeverRemindMeAgain})
-			dialog.SetDoneFunc(func(index int, label string) {
-				if label == buttonDontRemindAgainForThisVersion {
-					configuration.DontShowUpdateNotificationFor = version.GetLatestRemoteVersion()
-					config.PersistConfig()
-				} else if label == buttonNeverRemindMeAgain {
-					configuration.ShowUpdateNotifications = false
-					config.PersistConfig()
-				}
-
-				waitForUpdateDialogChannel <- true
-			})
-
-			app.QueueUpdateDraw(func() {
-				app.SetRoot(dialog, true)
-			})
-
-			<-waitForUpdateDialogChannel
-			close(waitForUpdateDialogChannel)
-		}
 
 		app.QueueUpdateDraw(func() {
 			window, createError := ui.NewWindow(app, discord, readyEvent)
